@@ -16,6 +16,13 @@ export default defineConfig({
   /* Relative base path for flexible deployment */
   base: './',
 
+  resolve: {
+    alias: [
+      /* Force Vite to use the pre-built UMD bundle of KaTeX to bypass aggressive tree-shaking */
+      { find: /^katex$/, replacement: 'katex/dist/katex.js' }
+    ]
+  },
+
   build: {
     /* Output to dist/ directory */
     outDir: 'dist',
