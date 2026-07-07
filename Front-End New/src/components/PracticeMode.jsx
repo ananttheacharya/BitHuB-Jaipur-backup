@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ExternalLink, X, Settings, RotateCcw, AlertCircle, Plus, Minus, Search, Play, Pause, Bookmark, BookmarkCheck } from 'lucide-react';
-import './PracticeMode.css';
 
 // Custom KaTeX components relying on window.katex loaded via CDN
 const InlineMath = ({ math }) => {
