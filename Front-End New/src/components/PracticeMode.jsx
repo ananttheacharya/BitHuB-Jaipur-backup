@@ -257,7 +257,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
         
         for (const mod of selectedModules) {
           const modNumber = mod.replace('mod', '');
-          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/practice/questions?subject=${subjectCode}&module=${modNumber}&difficulty=${diffsStr}&year=${yearsStr}&marks=${marksStr}`);
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/practice/questions?subject=${subjectCode}&module=${modNumber}&difficulty=${diffsStr}&year=${yearsStr}&marks=${marksStr}&latex_support=true`);
           const data = await res.json();
           if (data.questions) {
             allQs = [...allQs, ...data.questions];
