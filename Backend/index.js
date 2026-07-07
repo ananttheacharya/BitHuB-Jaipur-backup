@@ -252,7 +252,9 @@ app.get('/api/practice/questions', async (req, res) => {
         
         // Normalize LaTeX in all returned questions
         if (Array.isArray(result)) {
-            result = result.map(normalizeQuestionLatex);
+            if (req.query.latex_support !== 'true') {
+                result = result.map(normalizeQuestionLatex);
+            }
         }
         
         res.json({ questions: result || [] });
