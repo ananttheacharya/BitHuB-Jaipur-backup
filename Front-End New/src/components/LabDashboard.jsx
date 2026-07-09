@@ -380,7 +380,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <button 
                     key={idx}
                     className="subject-selection-btn"
-                    onClick={() => window.open(`/study-material/ME24102/${pdf}`, '_blank')}
+                    onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/ME24102/${pdf}`, '_blank')}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                       {renderFileIcon(false)}
@@ -477,7 +477,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
               <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 <button 
                   className="subject-selection-btn"
-                  onClick={() => window.open(`/study-material/PH24102/physics_lab.pdf`, '_blank')}
+                  onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/PH24102/physics_lab.pdf`, '_blank')}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                     <div className="math-logo-box" style={{width: 54, height: 54}}>
@@ -553,7 +553,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
               <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 <button 
                   className="subject-selection-btn"
-                  onClick={() => window.open(`/study-material/${selectedLab}/${isEC ? 'ece_lab.pdf' : 'chemistry_lab.pdf'}`, '_blank')}
+                  onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${selectedLab}/${isEC ? 'ece_lab.pdf' : 'chemistry_lab.pdf'}`, '_blank')}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                     <div className="math-logo-box" style={{width: 54, height: 54}}>
@@ -645,7 +645,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                     <button 
                       key={idx}
                       className="subject-selection-btn"
-                      onClick={() => window.open(`/study-material/PE24102/${activePEShop}/${file}`, '_blank')}
+                      onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/PE24102/${activePEShop}/${file}`, '_blank')}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                         {renderFileIcon(isZip)}
@@ -771,7 +771,7 @@ const ME24102Modal = ({ activeMEModal, setActiveMEModal, renderImageIcon }) => {
                 <button 
                   key={idx}
                   className="subject-selection-btn"
-                  onClick={() => window.open(`/study-material/ME24102/${encodeURIComponent(activeMEModal)}/${encodeURIComponent(file)}`, '_blank')}
+                  onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/ME24102/${encodeURIComponent(activeMEModal)}/${encodeURIComponent(file)}`, '_blank')}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                     {renderImageIcon()}

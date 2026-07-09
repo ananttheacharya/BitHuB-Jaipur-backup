@@ -643,11 +643,11 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
   const handleDownloadPaper = (filename) => {
     // Use the actual QPA folder name from backend (handles MAQPA for MA24103)
     const qpaFolder = subjectFiles?.qpaFolder || 'QPA';
-    window.open(`/study-material/${subjectCode}/${qpaFolder}/${filename}`, '_blank');
+    window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${qpaFolder}/${filename}`, '_blank');
   };
 
   const handleDownloadBook = (filename) => {
-    window.open(`/study-material/${subjectCode}/${filename}`, '_blank');
+    window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${filename}`, '_blank');
   };
 
   const handleResetFilters = () => {
@@ -744,7 +744,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                     className="mobile-module-row-btn"
                     onClick={() => {
                       if (modFiles.length === 1) {
-                        window.open(`/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
+                        window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
                       } else if (modFiles.length > 1) {
                         setActiveNotesModal({
                           modKey,
@@ -785,7 +785,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
               className="mobile-syllabus-main-btn"
               onClick={() => {
                 if (subjectFiles?.syllabus) {
-                  window.open(`/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
+                  window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
                 } else {
                   showToast("Syllabus PDF not found on server.");
                 }
@@ -1162,7 +1162,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                       key={idx} 
                       className="note-card-item mobile-note-card"
                       onClick={() => {
-                        window.open(`/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank');
+                        window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank');
                         setActiveNotesModal(null);
                       }}
                     >
@@ -1309,7 +1309,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                   onClick={() => {
                     setActiveModule(mod.id);
                     if (modFiles.length === 1) {
-                      window.open(`/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
+                      window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
                     } else if (modFiles.length > 1) {
                       setActiveNotesModal({
                         modKey,
@@ -1345,7 +1345,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
             className="syllabus-btn" 
             onClick={() => {
               if (subjectFiles?.syllabus) {
-                window.open(`/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
+                window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
               } else {
                 showToast("Syllabus PDF not found on server.");
               }
@@ -1869,7 +1869,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                   <div 
                     key={idx} 
                     className="note-card-item"
-                    onClick={() => window.open(`/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank')}
+                    onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank')}
                   >
                     <div className="note-card-top">
                       <div className="note-card-icon">

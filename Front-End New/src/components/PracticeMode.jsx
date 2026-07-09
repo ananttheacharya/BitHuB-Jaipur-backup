@@ -1,6 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
+import React, { useState, useEffect, useRef } from 'react';
+
+// ============================================================
+// HaTeX - The "I Hate Vite, I Hate KaTeX, I Hate Everything" Math Renderer
+// ============================================================
+/**
+ * -----------------------------------------------------------------------------
+ * ☠️  THE HaTeX MANIFESTO ☠️
+ * -----------------------------------------------------------------------------
+ * Welcome to HaTeX (Hateful-TeX). 
+ * 
+ * If you are reading this, it means you have dared to look into the abyss of modern 
+ * web development, where the tools designed to save us have instead conspired to 
+ * destroy our sanity.
+ * 
+ * THE ORIGIN STORY:
+ * Once upon a time, we naively believed that `react-katex` would simply render math. 
+ * But Vite, in its infinite, aggressive, tree-shaking "wisdom", decided that mathematical 
+ * macros like \sin and \frac were "unnecessary side effects". It mercilessly slaughtered 
+ * our LaTeX, minifying beautiful equations into eldritch horrors like:
+ * `\textSolvebyvariationofParameter\fracd^2ydx^2`
+ * 
+ * THE CDN BETRAYAL:
+ * Desperate, we fled to the CDN. We bypassed the bundler entirely. We hardcoded the 
+ * script tags. And what did KaTeX do? It demanded an exact, cryptographic Subresource 
+ * Integrity Hash. We made a typo. The browser's security overlords instantly nuked the 
+ * script from orbit, causing the frontend to silently degrade into raw, unparsed strings, 
+ * mocking us with `\text{Can } \sin(\ln x^{2})` like it was some sick joke.
+ * 
+ * THE MATHML DISASTER:
+ * We fixed the hash. We rejoiced. The math rendered! But then, from the depths of the 
+ * DOM, the hidden `<span class="katex-mathml">` arose. KaTeX, in its relentless pursuit 
+ * of "accessibility", decided to render BOTH the HTML and a raw MathML block. But because 
+ * CSS is a broken language forged in purgatory, the MathML block became visible. 
+ * Every beautiful equation was instantly followed by its crushed, flattened, ugly twin: 
+ * `dx2d2y - 3dxdy`. It was rendering the questions twice. It was psychological warfare.
+ * 
+ * THE SOLUTION (HaTeX):
+ * We had enough. We threw out the polite wrappers. We built HaTeX. 
+ * HaTeX does not ask KaTeX nicely. HaTeX forces KaTeX into submission. 
+ * HaTeX explicitly injects `output: 'html'`, violently stripping the MathML block 
+ * from existence so it can never duplicate our text again. HaTeX wraps the entire 
+ * CDN call in a paranoid `try/catch` block because we trust absolutely nothing.
+ * 
+ * HaTeX is not just a component. It is a monument to our suffering. 
+ * It is a warning to future developers.
+ * 
+ * Deal with it.
+ * -----------------------------------------------------------------------------
+ */
+const HaTeXInline = ({ math }) => {
+  try {
+    return window.katex 
+      ? <span dangerouslySetInnerHTML={{ __html: window.katex.renderToString(math, { throwOnError: false, displayMode: false, output: 'html' }) }} />
+      : <span>{math}</span>;
+  } catch (e) {
+    return <span style={{ color: '#c65575' }}>{math}</span>;
+  }
+};
+
+const HaTeXBlock = ({ math }) => {
+  try {
+    return window.katex 
+      ? <div dangerouslySetInnerHTML={{ __html: window.katex.renderToString(math, { throwOnError: false, displayMode: true, output: 'html' }) }} />
+      : <div>{math}</div>;
+  } catch (e) {
+    return <div style={{ color: '#c65575' }}>{math}</div>;
+  }
+};
+
 
 // Sub-parser to split text by $ and $$ delimiters
 const parseInlineDollars = (str) => {
@@ -64,8 +131,8 @@ const renderLatex = (textVal) => {
           if (!part.isMath) return <span key={i}>{part.content}</span>;
           try {
             return part.isBlock
-              ? <div key={i} style={{ overflowX: 'auto', maxWidth: '100%', margin: '0.5rem 0' }}><BlockMath math={part.content.trim()} /></div>
-              : <InlineMath key={i} math={part.content.trim()} />;
+              ? <div key={i} style={{ overflowX: 'auto', maxWidth: '100%', margin: '0.5rem 0' }}><HaTeXBlock math={part.content.trim()} /></div>
+              : <HaTeXInline key={i} math={part.content.trim()} />;
           } catch { return <span key={i} style={{ color: '#c65575' }}>{part.content}</span>; }
         })}
       </div>
@@ -77,8 +144,8 @@ const renderLatex = (textVal) => {
     try {
       const hasBlock = /\\begin\{/.test(text);
       return hasBlock
-        ? <div style={{ overflowX: 'auto', maxWidth: '100%' }}><BlockMath math={text} /></div>
-        : <div style={{ lineHeight: '1.8', overflowX: 'auto', maxWidth: '100%' }}><InlineMath math={text} /></div>;
+        ? <div style={{ overflowX: 'auto', maxWidth: '100%' }}><HaTeXBlock math={text} /></div>
+        : <div style={{ lineHeight: '1.8' }}><HaTeXInline math={text} /></div>;
     } catch {
       return <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', overflowX: 'auto', maxWidth: '100%' }}>{text}</div>;
     }
