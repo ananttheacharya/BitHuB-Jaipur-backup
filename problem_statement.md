@@ -37,7 +37,26 @@ To automate the confirmation of this issue and ensure it never silently fails ag
 **Verification Steps:**
 1. Open the production site.
 2. If `window.katex` fails to load (due to SRI mismatch or network issues), the verification script will immediately inject a highly visible red banner at the bottom right of the screen saying **"KaTeX Failed to Load"**.
-3. You can also open the Browser Console (F12) to see the exact error: `KaTeX failed to load from CDN!`.
-4. If KaTeX loads correctly, the console will log: `KaTeX successfully loaded!`.
-
 This foolproof measure ensures that any future CDN or integrity issues are instantly visible, rather than failing silently into raw text.
+
+## Phase 3: The "Duplicate Text" MathML Bug & The Birth of HaTeX
+After fixing the CDN issue, KaTeX successfully loaded and rendered the mathematics beautifully. However, a new bug appeared: every mathematical expression was duplicated, showing the beautifully rendered LaTeX first, followed immediately by a crushed, plain-text version of the math (e.g., `dx2d2y - 3dxdy`).
+
+**The Cause:** By default, KaTeX's `renderToString` outputs both visual HTML and an accessibility block in MathML (`<span class="katex-mathml">`). Normally, the `katex.min.css` file hides this MathML block visually using CSS `clip` and `position: absolute`. However, due to CSS conflicts or loading race conditions, the MathML block became visible on the page, causing the browser to render the raw MathML tags as crushed plain text right below the HTML version.
+
+**The Solution:**
+We discarded the basic `InlineMath` and `BlockMath` components and implemented **HaTeX** (The "I Hate Vite" Math Renderer). HaTeX explicitly forces KaTeX to strip out the MathML block by passing `output: 'html'` into the `renderToString` options:
+`window.katex.renderToString(math, { throwOnError: false, displayMode: false, output: 'html' })`
+
+This completely eradicated the duplicate plain-text rendering and relied strictly on the HTML output.
+
+## Phase 4: The Final Betrayal (CSS SRI Hash Mismatch)
+Just when we thought it was over, HaTeX successfully stripped the MathML block, leaving only the HTML output. However, the math *still* looked like crushed plain text (`-x^2e^x` instead of a properly formatted superscript). 
+
+**The Cause:** The `katex.min.css` file was silently failing to load in production! We had a mismatch in the Subresource Integrity (SRI) hash for the CSS file (`sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV` was required, but we had the official doc's version which jsdelivr had apparently altered slightly).
+
+Without the CSS, the browser ignored all of KaTeX's `.vlist` and `.mord` positional classes, rendering the carefully constructed HTML elements strictly inline as raw text!
+
+**The Final Fix:** We calculated the exact hash directly from the CDN response and corrected it in `index.html`. The CSS now loads successfully, properly formatting the KaTeX HTML spans into elevated, beautiful mathematics.
+
+The pipeline is now truly robust. We have conquered Vite's tree-shaking, bypassed the bundler, survived the CDN integrity checks, stripped the MathML duplicates, and corrected the styling hash.
