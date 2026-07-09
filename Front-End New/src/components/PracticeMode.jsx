@@ -118,12 +118,15 @@ const renderLatex = (textVal) => {
   let text = String(textVal).trim();
   if (!text) return null;
 
+  // Fix literal '\n' escaping from backend
+  text = text.replace(/\\n/g, '\n');
+
   // Category 1: Has $ delimiters → parse mixed inline/block math
   if (text.includes('$')) {
     const parts = parseMixedLatex(text);
     if (parts.length === 0) return <span>{text}</span>;
     return (
-      <div style={{ whiteSpace: 'normal', wordBreak: 'break-word', lineHeight: '1.8' }}>
+      <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: '1.8', overflowX: 'auto', maxWidth: '100%' }}>
         {parts.map((part, i) => {
           if (!part.isMath) return <span key={i}>{part.content}</span>;
           try {
@@ -144,12 +147,12 @@ const renderLatex = (textVal) => {
         ? <div style={{ overflowX: 'auto', maxWidth: '100%' }}><HaTeXBlock math={text} /></div>
         : <div style={{ lineHeight: '1.8' }}><HaTeXInline math={text} /></div>;
     } catch {
-      return <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>{text}</span>;
+      return <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', overflowX: 'auto', maxWidth: '100%' }}>{text}</div>;
     }
   }
 
   // Category 3: Plain text — render as HTML
-  return <span style={{ whiteSpace: 'normal', wordBreak: 'break-word', lineHeight: '1.6' }}>{text}</span>;
+  return <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', lineHeight: '1.6', overflowX: 'auto', maxWidth: '100%' }}>{text}</div>;
 };
 
 // ============================================================
@@ -960,7 +963,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                   <p style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--dash-text-color)', margin: '0' }}>
                     Select the correct option:
                   </p>
-                  <div className="mcq-options-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+                  <div className="mcq-options-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '1rem' }}>
                     {mcqChoices.map((choice, idx) => {
                       const letter = String.fromCharCode(65 + idx);
                       const isSelected = userAnswers[currentIndex] === choice;
