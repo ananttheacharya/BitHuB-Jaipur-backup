@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { API_BASE } from '../config';
 
 // ============================================================
 // HaTeX - The "I Hate Vite, I Hate KaTeX, I Hate Everything" Math Renderer
 // ============================================================
 /**
  * -----------------------------------------------------------------------------
- * ☠️  THE HaTeX MANIFESTO ☠️
+ * THE HaTeX MANIFESTO
  * -----------------------------------------------------------------------------
  * Welcome to HaTeX (Hateful-TeX). 
  * 
@@ -50,7 +51,7 @@ import React, { useState, useEffect, useRef } from 'react';
  */
 const HaTeXInline = ({ math }) => {
   try {
-    return window.katex 
+    return window.katex
       ? <span dangerouslySetInnerHTML={{ __html: window.katex.renderToString(math, { throwOnError: false, displayMode: false, output: 'html' }) }} />
       : <span>{math}</span>;
   } catch (e) {
@@ -60,7 +61,7 @@ const HaTeXInline = ({ math }) => {
 
 const HaTeXBlock = ({ math }) => {
   try {
-    return window.katex 
+    return window.katex
       ? <div dangerouslySetInnerHTML={{ __html: window.katex.renderToString(math, { throwOnError: false, displayMode: true, output: 'html' }) }} />
       : <div>{math}</div>;
   } catch (e) {
@@ -72,10 +73,10 @@ const HaTeXBlock = ({ math }) => {
 // Sub-parser to split text by $ and $$ delimiters
 const parseInlineDollars = (str) => {
   if (!str) return [];
-  
+
   const parts = [];
   const doubleDollarParts = str.split('$$');
-  
+
   doubleDollarParts.forEach((ddPart, ddIndex) => {
     if (ddIndex % 2 === 1) {
       parts.push({ isMath: true, isBlock: true, content: ddPart });
@@ -92,19 +93,19 @@ const parseInlineDollars = (str) => {
       });
     }
   });
-  
+
   return parts;
 };
 
 const parseMixedLatex = (str) => {
   if (!str) return [];
-  
+
   // Normalize double backslashes
   let cleaned = str.trim();
   cleaned = cleaned.replace(/\\\\\\\\/g, '\\\\');
   cleaned = cleaned.replace(/\\\\newline/g, '\\\\');
   cleaned = cleaned.replace(/\\\\/g, '\\');
-  
+
   return parseInlineDollars(cleaned);
 };
 
@@ -266,7 +267,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [retryTrigger, setRetryTrigger] = useState(0);
-  
+
   // Active question index
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -296,7 +297,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
   }, []);
 
   const currentQ = questions[currentIndex];
-  
+
   // 4-mode question routing
   const questionMode = React.useMemo(() => {
     if (!currentQ) return 'study';
@@ -324,17 +325,17 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
         const diffsStr = difficulties.join(',').toLowerCase();
         const yearsStr = years.join(',');
         const marksStr = marks.join(',');
-        
+
         for (const mod of selectedModules) {
           const modNumber = mod.replace('mod', '');
-          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/practice/questions?subject=${subjectCode}&module=${modNumber}&difficulty=${diffsStr}&year=${yearsStr}&marks=${marksStr}&latex_support=true`);
+          const res = await fetch(`${API_BASE}/api/practice/questions?subject=${subjectCode}&module=${modNumber}&difficulty=${diffsStr}&year=${yearsStr}&marks=${marksStr}&latex_support=true`);
           const data = await res.json();
           if (data.questions) {
             allQs = [...allQs, ...data.questions];
           }
         }
         setQuestions(allQs);
-        
+
         // Initialize status grid
         const initStatuses = {};
         allQs.forEach((_, idx) => {
@@ -385,9 +386,9 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
             <span className="logo-text" style={{ marginLeft: '1rem' }}>Practice Connection Error</span>
           </div>
           <div className="dash-header__right">
-             <button className="change-campus-btn" onClick={onToggleTheme} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}>
-               {theme === 'light' ? '🌙' : '☀️'}
-             </button>
+            <button className="change-campus-btn" onClick={onToggleTheme} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}>
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
           </div>
         </header>
         <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--dash-text-color)', fontFamily: 'var(--font-body)', gap: '1.2rem', padding: '2rem', maxWidth: '650px', margin: '0 auto' }}>
@@ -398,11 +399,11 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
           </div>
-          
+
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', textAlign: 'center', margin: 0 }}>
             Backend Server Offline or Unreachable
           </h2>
-          
+
           <p style={{ color: 'var(--dash-text-muted)', textAlign: 'center', margin: 0, fontSize: '0.98rem', lineHeight: '1.6' }}>
             We failed to establish a connection to the backend database service via the <code style={{ background: 'rgba(0,0,0,0.05)', padding: '2px 6px', borderRadius: '4px', fontFamily: 'monospace' }}>/api</code> proxy.
           </p>
@@ -459,9 +460,9 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
             <span className="logo-text" style={{ marginLeft: '1rem' }}>Practice: {subjectCode}</span>
           </div>
           <div className="dash-header__right">
-             <button className="change-campus-btn" onClick={onToggleTheme}>
-               {theme === 'light' ? '🌙' : '☀️'}
-             </button>
+            <button className="change-campus-btn" onClick={onToggleTheme}>
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
           </div>
         </header>
         <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--dash-text-color)', fontFamily: 'var(--font-body)', gap: '1rem', padding: '2rem' }}>
@@ -489,13 +490,13 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
     setLoadingCheck(true);
     try {
-      const res = await fetch((import.meta.env.VITE_API_BASE_URL || '') + '/api/practice/check', {
+      const res = await fetch(API_BASE + '/api/practice/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: currentQ.uid, answer })
       });
       const data = await res.json();
-      
+
       const isCorrect = data.isCorrect;
       setFeedbacks(prev => ({ ...prev, [currentIndex]: isCorrect ? 'correct' : 'incorrect' }));
       setStatuses(prev => ({ ...prev, [currentIndex]: isCorrect ? 'correct' : 'incorrect' }));
@@ -514,7 +515,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
     setLoadingCheck(true);
     try {
-      const res = await fetch((import.meta.env.VITE_API_BASE_URL || '') + '/api/practice/check', {
+      const res = await fetch(API_BASE + '/api/practice/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: currentQ.uid })
@@ -534,7 +535,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
     if (!code.trim()) return;
     setCodeRunning(true);
     try {
-      const res = await fetch((import.meta.env.VITE_API_BASE_URL || '') + '/api/practice/compile', {
+      const res = await fetch(API_BASE + '/api/practice/compile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, language: 'c' })
@@ -559,11 +560,11 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
             </svg>
             <span>Exit Practice</span>
           </button>
-          
+
           <span className="mobile-practice-subject-title">
             Practice: {subjectCode}
           </span>
-          
+
           <button className="mobile-practice-theme-btn" onClick={onToggleTheme}>
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
@@ -571,7 +572,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
         {/* Active Question Box Card */}
         <div className="mobile-practice-card">
-          
+
           {/* Metadata badges row */}
           <div className="mobile-practice-meta-row">
             <span className="badge-practice" style={{ fontSize: '0.65rem', padding: '3px 8px' }}>
@@ -603,12 +604,12 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
           {/* Interactive Input/Options Area */}
           <div className="mobile-practice-interactive-area">
-            
+
             {/* Keyboard input mode */}
             {questionMode === 'keyboard' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="pq-input-premium"
                   placeholder="Type your final answer..."
                   value={userAnswers[currentIndex] || ''}
@@ -635,7 +636,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                     const isSelected = userAnswers[currentIndex] === choice;
                     const isChecked = feedbacks[currentIndex];
                     const isCorrectChoice = choice === currentQ.final_answer;
-                    
+
                     let choiceClass = "mobile-mcq-option-btn";
                     if (isSelected) choiceClass += " selected";
                     if (isChecked) {
@@ -746,7 +747,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
             {/* Show Solution Section */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <button 
+              <button
                 className="btn-nav-premium"
                 onClick={handleRevealSolution}
                 disabled={loadingCheck}
@@ -767,7 +768,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                   </div>
                   {solutions[currentIndex].correctAnswer && (
                     <div className="solution-final-ans-pill" style={{ marginTop: '8px', padding: '6px 10px', borderRadius: '8px', fontSize: '0.78rem' }}>
-                      <strong>Expected: </strong> 
+                      <strong>Expected: </strong>
                       <span style={{ marginLeft: '4px' }}>
                         {renderLatex(solutions[currentIndex].correctAnswer)}
                       </span>
@@ -781,7 +782,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
           {/* Compact Counter Block & Connected Collapsible Navigator */}
           <div className="mobile-practice-dashboard-connected-block">
-            
+
             {/* 3-Part Stats Counter Row */}
             <div className="mobile-practice-compact-counter">
               <div className="mobile-practice-counter-col">
@@ -813,7 +814,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                   {questions.map((_, idx) => {
                     const qStatus = statuses[idx] || 'unattempted';
                     const isActive = currentIndex === idx;
-                    
+
                     let btnClass = 'circle-nav-node';
                     if (isActive) btnClass += ' active';
                     if (qStatus === 'correct') btnClass += ' correct';
@@ -821,7 +822,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                     else if (qStatus === 'unattempted') btnClass += ' not-visited';
 
                     return (
-                      <button 
+                      <button
                         key={idx}
                         className={btnClass}
                         onClick={() => setCurrentIndex(idx)}
@@ -854,7 +855,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
         {/* Floating / Bottom-aligned Action Row for Next / Prev */}
         <div className="mobile-practice-footer-controls">
-          <button 
+          <button
             className="btn-nav-premium"
             onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
             disabled={currentIndex === 0}
@@ -862,7 +863,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
           >
             ← Previous
           </button>
-          <button 
+          <button
             className="btn-nav-premium"
             onClick={() => setCurrentIndex(prev => Math.min(totalQuestions - 1, prev + 1))}
             disabled={currentIndex === totalQuestions - 1}
@@ -890,21 +891,21 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
           <span className="logo-text" style={{ marginLeft: '1.5rem' }}>Practice Environment</span>
         </div>
         <div className="dash-header__right">
-           <button className="change-campus-btn" onClick={onToggleTheme}>
-             {theme === 'light' ? '🌙' : '☀️'}
-           </button>
+          <button className="change-campus-btn" onClick={onToggleTheme}>
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
         </div>
       </header>
 
       {/* Main 2-Column Practice Layout */}
       <div className="practice-mode-layout">
-        
+
         {/* Left Column: Active Question Workspace */}
         <main className="practice-left-column">
-          
+
           {/* Question Box Card */}
           <div className="question-container-box">
-            
+
             {/* Badges and tags header */}
             <div className="question-header-meta">
               <span className="badge-practice">
@@ -933,13 +934,13 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
             {/* User Interaction Zone — 4 Modes */}
             <div className="interactive-action-zone">
-              
+
               {/* MODE: Keyboard Input (numerical/short answers) */}
               {questionMode === 'keyboard' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div className="numerical-input-group">
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       className="pq-input-premium"
                       placeholder="Type your final answer here..."
                       value={userAnswers[currentIndex] || ''}
@@ -978,15 +979,19 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                       return (
                         <button key={idx} className={choiceClass}
                           onClick={() => { if (!feedbacks[currentIndex]) setUserAnswers(prev => ({ ...prev, [currentIndex]: choice })); }}
-                          style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem',
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem',
                             background: isSelected ? 'var(--dash-active-module-bg)' : 'var(--dash-card-bg)',
                             border: isSelected ? '1.5px solid var(--dash-active-module-bg)' : '1px solid rgba(0,0,0,0.08)',
                             color: isSelected ? '#fff' : 'var(--dash-text-color)', borderRadius: '12px', textAlign: 'left',
                             cursor: feedbacks[currentIndex] ? 'not-allowed' : 'pointer', transition: 'all 0.25s ease',
-                            fontFamily: 'var(--font-body)' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px',
+                            fontFamily: 'var(--font-body)'
+                          }}>
+                          <div style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px',
                             borderRadius: '50%', background: isSelected ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.05)',
-                            color: isSelected ? '#fff' : 'var(--dash-text-color)', fontWeight: '700', fontSize: '0.9rem', flexShrink: 0 }}>
+                            color: isSelected ? '#fff' : 'var(--dash-text-color)', fontWeight: '700', fontSize: '0.9rem', flexShrink: 0
+                          }}>
                             {letter}
                           </div>
                           <div style={{ flexGrow: 1, fontSize: '0.95rem' }}>{renderLatex(choice)}</div>
@@ -1005,8 +1010,10 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
               {/* MODE: Study & Reveal (theoretical/conceptual/proof/derivation) */}
               {questionMode === 'study' && !feedbacks[currentIndex] && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.5rem', background: 'rgba(198,85,117,0.04)',
-                  borderRadius: '16px', border: '1px dashed rgba(198,85,117,0.2)' }}>
+                <div style={{
+                  display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.5rem', background: 'rgba(198,85,117,0.04)',
+                  borderRadius: '16px', border: '1px dashed rgba(198,85,117,0.2)'
+                }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: '24px', height: '24px', color: 'var(--dash-active-module-bg)' }}>
                       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
@@ -1039,18 +1046,22 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                     <span style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--dash-text-color)', fontFamily: 'var(--font-display)' }}>
                       💻 C Programming Editor
                     </span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--dash-text-muted)', background: 'rgba(0,0,0,0.05)',
-                      padding: '0.25rem 0.8rem', borderRadius: '20px' }}>Powered by Piston API</span>
+                    <span style={{
+                      fontSize: '0.75rem', color: 'var(--dash-text-muted)', background: 'rgba(0,0,0,0.05)',
+                      padding: '0.25rem 0.8rem', borderRadius: '20px'
+                    }}>Powered by Piston API</span>
                   </div>
                   <textarea
                     className="pq-code-editor"
                     value={codeText[currentIndex] || '#include <stdio.h>\n\nint main() {\n    // Write your code here\n    \n    return 0;\n}'}
                     onChange={(e) => setCodeText(prev => ({ ...prev, [currentIndex]: e.target.value }))}
                     spellCheck={false}
-                    style={{ width: '100%', minHeight: '260px', fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
+                    style={{
+                      width: '100%', minHeight: '260px', fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
                       fontSize: '0.88rem', lineHeight: '1.6', padding: '1.2rem', borderRadius: '12px',
                       background: '#1e1e2e', color: '#cdd6f4', border: '1px solid rgba(198,85,117,0.2)',
-                      resize: 'vertical', outline: 'none', tabSize: 4 }}
+                      resize: 'vertical', outline: 'none', tabSize: 4
+                    }}
                   />
                   <div style={{ display: 'flex', gap: '0.8rem' }}>
                     <button className="pq-btn-submit" onClick={handleCompileCode} disabled={codeRunning}
@@ -1066,8 +1077,10 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                     </button>
                   </div>
                   {codeOutput[currentIndex] && (
-                    <div style={{ background: '#1e1e2e', borderRadius: '12px', padding: '1rem', fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: '0.85rem', color: '#cdd6f4', border: codeOutput[currentIndex].success ? '1px solid rgba(46,204,113,0.3)' : '1px solid rgba(231,76,60,0.3)' }}>
+                    <div style={{
+                      background: '#1e1e2e', borderRadius: '12px', padding: '1rem', fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: '0.85rem', color: '#cdd6f4', border: codeOutput[currentIndex].success ? '1px solid rgba(46,204,113,0.3)' : '1px solid rgba(231,76,60,0.3)'
+                    }}>
                       <div style={{ color: codeOutput[currentIndex].success ? '#2ecc71' : '#e74c3c', fontWeight: '600', marginBottom: '0.5rem' }}>
                         {codeOutput[currentIndex].success ? '✓ Compilation Successful' : '✗ Error'}
                       </div>
@@ -1103,7 +1116,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
               {/* Show Solution Button / Expansion Card */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <button 
+                <button
                   className="btn-nav-premium"
                   onClick={handleRevealSolution}
                   disabled={loadingCheck}
@@ -1124,7 +1137,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                     </div>
                     {solutions[currentIndex].correctAnswer && (
                       <div className="solution-final-ans-pill">
-                        <strong>Expected Value: </strong> 
+                        <strong>Expected Value: </strong>
                         <span style={{ marginLeft: '4px' }}>
                           {renderLatex(solutions[currentIndex].correctAnswer)}
                         </span>
@@ -1140,14 +1153,14 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
           {/* Sequential Next / Prev Controls */}
           <div className="question-nav-controls-row">
-            <button 
+            <button
               className="btn-nav-premium"
               onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
               disabled={currentIndex === 0}
             >
               ← Previous Question
             </button>
-            <button 
+            <button
               className="btn-nav-premium"
               onClick={() => setCurrentIndex(prev => Math.min(totalQuestions - 1, prev + 1))}
               disabled={currentIndex === totalQuestions - 1}
@@ -1160,7 +1173,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
 
         {/* Right Column: Statistics and Session Navigation Grid */}
         <aside className="practice-right-sidebar">
-          
+
           {/* Attempt Statistics Panel */}
           <div className="panel-sidebar-premium">
             <span className="panel-sidebar-title">Attempt Statistics</span>
@@ -1198,7 +1211,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
               {questions.map((_, idx) => {
                 const qStatus = statuses[idx] || 'unattempted';
                 const isActive = currentIndex === idx;
-                
+
                 let btnClass = 'circle-nav-node';
                 if (isActive) btnClass += ' active';
                 if (qStatus === 'correct') btnClass += ' correct';
@@ -1206,7 +1219,7 @@ function PracticeMode({ subjectCode, selectedModules, difficulties = ['Easy', 'M
                 else if (qStatus === 'unattempted') btnClass += ' not-visited';
 
                 return (
-                  <button 
+                  <button
                     key={idx}
                     className={btnClass}
                     onClick={() => setCurrentIndex(idx)}
