@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { API_BASE } from '../config';
 import CreatorsSection from './CreatorsSection';
 import CS24102Dashboard from './CS24102Dashboard';
 import Toast from './Toast';
@@ -380,7 +381,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <button 
                     key={idx}
                     className="subject-selection-btn"
-                    onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/ME24102/${pdf}`, '_blank')}
+                    onClick={() => window.open(`${API_BASE}/study-material/ME24102/${pdf}`, '_blank')}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                       {renderFileIcon(false)}
@@ -477,7 +478,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
               <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 <button 
                   className="subject-selection-btn"
-                  onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/PH24102/physics_lab.pdf`, '_blank')}
+                  onClick={() => window.open(`${API_BASE}/study-material/PH24102/physics_lab.pdf`, '_blank')}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                     <div className="math-logo-box" style={{width: 54, height: 54}}>
@@ -553,7 +554,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
               <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 <button 
                   className="subject-selection-btn"
-                  onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${selectedLab}/${isEC ? 'ece_lab.pdf' : 'chemistry_lab.pdf'}`, '_blank')}
+                  onClick={() => window.open(`${API_BASE}/study-material/${selectedLab}/${isEC ? 'ece_lab.pdf' : 'chemistry_lab.pdf'}`, '_blank')}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                     <div className="math-logo-box" style={{width: 54, height: 54}}>
@@ -645,7 +646,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                     <button 
                       key={idx}
                       className="subject-selection-btn"
-                      onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/PE24102/${activePEShop}/${file}`, '_blank')}
+                      onClick={() => window.open(`${API_BASE}/study-material/PE24102/${activePEShop}/${file}`, '_blank')}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                         {renderFileIcon(isZip)}
@@ -736,7 +737,7 @@ const ME24102Modal = ({ activeMEModal, setActiveMEModal, renderImageIcon }) => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/study-material/files?folder=ME24102/${encodeURIComponent(activeMEModal)}`)
+    fetch(`${API_BASE}/api/study-material/files?folder=ME24102/${encodeURIComponent(activeMEModal)}`)
       .then(res => res.json())
       .then(data => {
         setFiles(data.files || []);
@@ -771,7 +772,7 @@ const ME24102Modal = ({ activeMEModal, setActiveMEModal, renderImageIcon }) => {
                 <button 
                   key={idx}
                   className="subject-selection-btn"
-                  onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/ME24102/${encodeURIComponent(activeMEModal)}/${encodeURIComponent(file)}`, '_blank')}
+                  onClick={() => window.open(`${API_BASE}/study-material/ME24102/${encodeURIComponent(activeMEModal)}/${encodeURIComponent(file)}`, '_blank')}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                     {renderImageIcon()}

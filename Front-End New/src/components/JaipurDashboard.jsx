@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import { API_BASE } from '../config';
 const PracticeMode = lazy(() => import('./PracticeMode'));
 import CreatorsSection from './CreatorsSection';
 
@@ -154,7 +155,7 @@ const REFERENCE_BOOKS_REGISTRY = {
 // SUBJECTS REGISTRY & DATA INTEGRATION ENDPOINTS
 // ============================================================
 // Future developers can connect this registry object to backend API fetches
-// (e.g. fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/subjects/${code}`).then(res => res.json()))
+// (e.g. fetch(`${API_BASE}/api/subjects/${code}`).then(res => res.json()))
 
 const SUBJECTS_REGISTRY = {
   "MA24101": {
@@ -537,7 +538,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
     setPracticeMeta(null);
     
     // Fetch dynamic files from backend
-    fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/subjects/${subjectCode}/materials`)
+    fetch(`${API_BASE}/api/subjects/${subjectCode}/materials`)
       .then(res => res.json())
       .then(data => {
         if (!data.error) setSubjectFiles(data);
@@ -545,7 +546,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
       .catch(err => console.error("Failed to fetch materials:", err));
 
     // Fetch Practice Meta
-    fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/practice/meta?subject=${subjectCode}`)
+    fetch(`${API_BASE}/api/practice/meta?subject=${subjectCode}`)
       .then(res => res.json())
       .then(data => {
         if (!data.error) {
@@ -643,11 +644,11 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
   const handleDownloadPaper = (filename) => {
     // Use the actual QPA folder name from backend (handles MAQPA for MA24103)
     const qpaFolder = subjectFiles?.qpaFolder || 'QPA';
-    window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${qpaFolder}/${filename}`, '_blank');
+    window.open(`${API_BASE}/study-material/${subjectCode}/${qpaFolder}/${filename}`, '_blank');
   };
 
   const handleDownloadBook = (filename) => {
-    window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${filename}`, '_blank');
+    window.open(`${API_BASE}/study-material/${subjectCode}/${filename}`, '_blank');
   };
 
   const handleResetFilters = () => {
@@ -744,7 +745,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                     className="mobile-module-row-btn"
                     onClick={() => {
                       if (modFiles.length === 1) {
-                        window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
+                        window.open(`${API_BASE}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
                       } else if (modFiles.length > 1) {
                         setActiveNotesModal({
                           modKey,
@@ -785,7 +786,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
               className="mobile-syllabus-main-btn"
               onClick={() => {
                 if (subjectFiles?.syllabus) {
-                  window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
+                  window.open(`${API_BASE}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
                 } else {
                   showToast("Syllabus PDF not found on server.");
                 }
@@ -1162,7 +1163,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                       key={idx} 
                       className="note-card-item mobile-note-card"
                       onClick={() => {
-                        window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank');
+                        window.open(`${API_BASE}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank');
                         setActiveNotesModal(null);
                       }}
                     >
@@ -1309,7 +1310,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                   onClick={() => {
                     setActiveModule(mod.id);
                     if (modFiles.length === 1) {
-                      window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
+                      window.open(`${API_BASE}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
                     } else if (modFiles.length > 1) {
                       setActiveNotesModal({
                         modKey,
@@ -1345,7 +1346,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
             className="syllabus-btn" 
             onClick={() => {
               if (subjectFiles?.syllabus) {
-                window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
+                window.open(`${API_BASE}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
               } else {
                 showToast("Syllabus PDF not found on server.");
               }
@@ -1869,7 +1870,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                   <div 
                     key={idx} 
                     className="note-card-item"
-                    onClick={() => window.open(`${import.meta.env.VITE_API_BASE_URL || ''}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank')}
+                    onClick={() => window.open(`${API_BASE}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank')}
                   >
                     <div className="note-card-top">
                       <div className="note-card-icon">

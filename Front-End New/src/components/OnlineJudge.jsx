@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE } from '../config';
 import Editor from '@monaco-editor/react';
 import './LabDashboard.css';
 import './OnlineJudge.css';
@@ -50,7 +51,7 @@ const OnlineJudge = ({ problem, theme, onBack }) => {
     setIsDrawerOpen(false);
 
     try {
-      const res = await fetch((import.meta.env.VITE_API_BASE_URL || '') + '/api/practice/compile', {
+      const res = await fetch(API_BASE + '/api/practice/compile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
